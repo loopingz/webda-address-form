@@ -1,0 +1,105 @@
+<link rel="import" href="../../bower_components/google-apis/google-maps-api.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+
+<dom-module id="webda-address-form">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+    <google-maps-api
+      id="map"
+      api-key="[[apiKey]]"
+      version="3.exp"
+      libraries="places"
+      ></google-maps-api>
+
+    <paper-input id="address1Input" value="{{address.companyAddress1Input}}" placeholder="" label="Address input 1" autocomplete="on"></paper-input>
+    <paper-input value="{{address.companyAddress2Input}}" label="Address input 2"></paper-input>
+    <paper-input value="{{address.companyAddressCity}}" label="City"></paper-input>
+    <paper-input value="{{address.companyAddressState}}" label="State"></paper-input>
+    <paper-input value="{{address.companyAddressZIP}}" label="Zip"></paper-input>
+    <paper-input value="{{address.companyAddressCountry}}" label="Country"></paper-input>
+  </template>
+
+  <script>
+    /**
+     * `webda-address-form`
+     * autocomplete address form through paper-input component with google-api
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class WebdaAddressForm extends Polymer.Element {
+      static get is() { return 'webda-address-form'; }
+      static get properties() {
+        return {
+          apiKey: {
+            type: String,
+            value: ''
+          },
+          address: {
+            type: Object,
+            value: {}
+          }
+        };
+      }
+      ready() {
+        super.ready();
+        this.$.map.addEventListener('api-load', () => {
+          this._initialize();
+        });
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this._initialize();
+      }
+
+      detached() {
+        this.autocomplete = null;
+        window.google = null;
+      }
+
+      _initialize() {
+        if (!window.google || !window.google.maps || this.autocomplete) {
+          return;
+        }
+
+        this.autocomplete = new window.google.maps.places.Autocomplete(this.$.address1Input.inputElement.querySelector('input'), { types: ['address'] });
+        window.google.maps.event.addListener(this.autocomplete, 'place_changed', this._fillInAddress.bind(this));
+      }
+
+      _fillInAddress() {
+        var place = this.autocomplete.getPlace();
+        if (!place) {
+          return;
+        }
+
+        this.set('address.companyAddress1Input' , (this._getAddressComponent(place, 'street_number', 'short_name') +
+          ' ' + this._getAddressComponent(place, 'route', 'long_name')).trim() || place.name);
+        this.set('address.companyAddress2Input' , '');
+        this.set('address.companyAddressCity', this._getAddressComponent(place, 'locality', 'long_name'));
+        this.set('address.companyAddressState' , this._getAddressComponent(place, 'administrative_area_level_1', 'short_name'));
+        this.set('address.companyAddressZIP', this._getAddressComponent(place, 'postal_code', 'short_name'));
+        this.set('address.companyAddressCountry' , this._getAddressComponent(place, 'country', 'long_name'));
+      }
+
+      _getAddressComponent (place, component, valueType) {
+        if (place.address_components) {
+          for (var i = 0; i < place.address_components.length; i++) {
+            var componentType = place.address_components[i].types[0];
+            if (componentType === component) {
+              return place.address_components[i][valueType];
+            }
+          }
+        }
+        return '';
+      }
+    }
+
+    window.customElements.define(WebdaAddressForm.is, WebdaAddressForm);
+  </script>
+</dom-module>

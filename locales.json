@@ -1,0 +1,20 @@
+{
+  "en": {
+    "account.Company.Name": "Company name",
+    "account.Company.Address1Input": "Adress line 1",
+    "account.Company.Address2Input": "Adress line 2",
+    "account.Company.CityInput": "City",
+    "account.Company.StateInput": "State/Province/Region",
+    "account.Company.ZipCodeInput": "Zip/Postal Code",
+    "account.Company.Country": "Country"
+  },
+  "fr": {
+    "account.Company.Name": "Nom de la société",
+    "account.Company.Address1Input": "Adresse",
+    "account.Company.Address2Input": "Complément d'adresse",
+    "account.Company.CityInput": "Ville",
+    "account.Company.StateInput": "État/Province/Région",
+    "account.Company.ZipCodeInput": "Code postal",
+    "account.Company.Country": "Pays"
+    }
+}
