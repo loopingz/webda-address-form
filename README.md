@@ -27,7 +27,7 @@ Project name:
 
   - Otherwise you pass give your API-key through the component when calling it like this:
 
-      <webda-address-form api-key="hereYouCanAddYourApiKey"></webda-address-form>
+      "<webda-address-form api-key="hereYouCanAddYourApiKey"></webda-address-form>"
 
  Credits:
   - loopingz https://github.com/loopingz
